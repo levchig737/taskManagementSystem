@@ -1,4 +1,4 @@
-package io.chekarev.taskManagementSystem.repositories.specifications;
+package io.chekarev.taskManagementSystem.specifications;
 
 import io.chekarev.taskManagementSystem.domain.entities.Task;
 import jakarta.persistence.criteria.Predicate;

@@ -5,7 +5,7 @@ import io.chekarev.taskManagementSystem.domain.entities.Task;
 import io.chekarev.taskManagementSystem.domain.mappers.TaskMapper;
 import io.chekarev.taskManagementSystem.exceptions.ResourceNotFoundException;
 import io.chekarev.taskManagementSystem.repositories.TaskRepository;
-import io.chekarev.taskManagementSystem.repositories.specifications.TaskSpecification;
+import io.chekarev.taskManagementSystem.specifications.TaskSpecification;
 import io.chekarev.taskManagementSystem.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

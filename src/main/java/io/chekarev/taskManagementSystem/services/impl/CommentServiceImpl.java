@@ -72,13 +72,12 @@ public class CommentServiceImpl implements CommentService {
      * @throws ResourceNotFoundException Если комментарий не найден или если текущий пользователь не является его владельцем.
      */
     @Override
-    public void deleteCommentForCurrentUser(Long id) {
-        User userDetails = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public void deleteCommentForCurrentUser(Long id, User currentUser) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
 
         // Проверка, что текущий пользователь является владельцем комментария
-        if (!comment.getUser().getEmail().equals(userDetails.getUsername())) {
+        if (!comment.getUser().getEmail().equals(currentUser.getUsername())) {
             throw new ResourceNotFoundException("You can only delete your own comments");
         }
 

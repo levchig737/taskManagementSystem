@@ -2,6 +2,7 @@ package io.chekarev.taskManagementSystem.services;
 
 
 import io.chekarev.taskManagementSystem.domain.dto.CommentDTO;
+import io.chekarev.taskManagementSystem.domain.entities.User;
 
 import java.util.List;
 
@@ -39,5 +40,5 @@ public interface CommentService {
      *
      * @param id ID комментария.
      */
-    void deleteCommentForCurrentUser(Long id);
+    void deleteCommentForCurrentUser(Long id, User currentUser);
 }

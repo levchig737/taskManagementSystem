@@ -1,6 +1,7 @@
 package io.chekarev.taskManagementSystem.controllers;
 
 import io.chekarev.taskManagementSystem.domain.dto.CommentDTO;
+import io.chekarev.taskManagementSystem.domain.entities.User;
 import io.chekarev.taskManagementSystem.services.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -81,8 +83,8 @@ public class CommentController {
      */
     @Operation(summary = "Удалить комментарий по ID для текущего пользователя", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/me/{id}")
-    public ResponseEntity<Void> deleteCommentForCurrentUser(@PathVariable Long id) {
-        commentService.deleteCommentForCurrentUser(id);
+    public ResponseEntity<Void> deleteCommentForCurrentUser(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+        commentService.deleteCommentForCurrentUser(id, currentUser);
         return ResponseEntity.noContent().build();
     }
 }
