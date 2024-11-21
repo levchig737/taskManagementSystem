@@ -44,7 +44,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Отключаем CSRF-защиту
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("users/admin/**", "comments/admin/**", "tasks/admin/**", "auth/admin/**").hasAuthority("ROLE_ADMIN") // Доступ для администраторов
+                        .requestMatchers("users/admin/**", "comments/admin/**", "tasks/admin/**", "auth/admin/**").hasAuthority("ADMIN") // Доступ для администраторов
                         .requestMatchers("/auth/**").permitAll() // Открытый доступ к эндпоинтам аутентификации
                         .requestMatchers("/users/**").permitAll() // Открытый доступ к пользователям
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll() // Открытый доступ к Swagger UI

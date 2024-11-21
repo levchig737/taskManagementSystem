@@ -3,80 +3,96 @@ package io.chekarev.taskManagementSystem.controllers;
 import io.chekarev.taskManagementSystem.domain.entities.User;
 import io.chekarev.taskManagementSystem.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Контроллер для управления пользователями.
- * Этот контроллер обрабатывает HTTP-запросы для получения, обновления и удаления данных пользователей.
- * Включает в себя эндпоинты для работы с пользователями, используя сервисный слой.
+ * Контроллер для управления пользователями. Предоставляет API для администраторов и текущих пользователей
+ * для выполнения операций с пользователями, включая создание, обновление, удаление и получение информации.
  */
+@Tag(name = "UserController", description = "API для управления пользователями")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-@Tag(name = "User Management", description = "API для управления пользователями")
 public class UserController {
 
     private final UserService userService;
 
     /**
-     * Получение списка всех пользователей.
-     * Возвращает список всех пользователей из базы данных.
+     * Получить список всех пользователей. Этот эндпоинт доступен только администраторам.
      *
-     * @return ResponseEntity с кодом состояния 200 (OK) и списком пользователей.
+     * @return Список всех пользователей.
      */
-    @GetMapping
-    @Operation(summary = "Получить всех пользователей", description = "Возвращает список всех пользователей из базы данных.")
+    @Operation(summary = "Получить список всех пользователей", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/admin")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     /**
-     * Получение пользователя по его идентификатору.
-     * Возвращает информацию о пользователе с заданным идентификатором.
+     * Получить данные пользователя по ID. Этот эндпоинт доступен только администраторам.
      *
-     * @param id идентификатор пользователя.
-     * @return ResponseEntity с кодом состояния 200 (OK) и объектом пользователя.
+     * @param id ID пользователя.
+     * @return Данные пользователя.
      */
-    @GetMapping("/{id}")
-    @Operation(summary = "Получить пользователя по ID", description = "Возвращает данные пользователя по заданному идентификатору.")
+    @Operation(summary = "Получить данные пользователя по ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/admin/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     /**
-     * Обновление данных пользователя.
-     * Обновляет информацию о пользователе по его идентификатору.
+     * Обновить данные пользователя. Этот эндпоинт доступен только администраторам.
      *
-     * @param id          идентификатор пользователя, данные которого нужно обновить.
-     * @param userDetails объект, содержащий новые данные для обновления.
-     * @return ResponseEntity с кодом состояния 200 (OK) и обновленным пользователем.
+     * @param id ID пользователя.
+     * @param user Обновленные данные пользователя.
+     * @return Обновленные данные пользователя.
      */
-    @PutMapping("/{id}")
-    @Operation(summary = "Обновить пользователя", description = "Обновляет данные пользователя по его идентификатору.")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        User updatedUser = userService.updateUser(id, userDetails);
-        return ResponseEntity.ok(updatedUser);
+    @Operation(summary = "Обновить данные пользователя", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return ResponseEntity.ok(userService.updateUser(id, user));
     }
 
     /**
-     * Удаление пользователя по его идентификатору.
-     * Удаляет пользователя с заданным идентификатором из базы данных.
+     * Удалить пользователя по ID. Этот эндпоинт доступен только администраторам.
      *
-     * @param id идентификатор пользователя, которого нужно удалить.
-     * @return ResponseEntity с кодом состояния 204 (NO CONTENT) при успешном удалении.
+     * @param id ID пользователя.
+     * @return Ответ без содержимого.
      */
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Удалить пользователя", description = "Удаляет пользователя из базы данных по заданному идентификатору.")
+    @Operation(summary = "Удалить пользователя по ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Получить данные текущего пользователя.
+     *
+     * @return Данные текущего пользователя.
+     */
+    @Operation(summary = "Получить данные текущего пользователя", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser() {
+        return ResponseEntity.ok(userService.getCurrentUser());
+    }
+
+    /**
+     * Обновить данные текущего пользователя.
+     *
+     * @param user Обновленные данные текущего пользователя.
+     * @return Обновленные данные пользователя.
+     */
+    @Operation(summary = "Обновить данные текущего пользователя", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping("/me")
+    public ResponseEntity<User> updateCurrentUser(@RequestBody User user) {
+        return ResponseEntity.ok(userService.updateCurrentUser(user));
     }
 }
+

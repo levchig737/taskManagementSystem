@@ -2,6 +2,7 @@ package io.chekarev.taskManagementSystem.repositories;
 
 import io.chekarev.taskManagementSystem.domain.entities.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * Обеспечивает доступ к данным заданий в базе данных.
  */
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
 
     /**
      * Получение списка заданий, созданных автором.

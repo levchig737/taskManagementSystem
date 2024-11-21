@@ -1,6 +1,7 @@
 package io.chekarev.taskManagementSystem.services;
 
 import io.chekarev.taskManagementSystem.domain.entities.User;
+import io.chekarev.taskManagementSystem.exceptions.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -48,4 +49,20 @@ public interface UserService {
      * @return объект пользователя.
      */
     User findByEmailForAuthentication(String email);
+
+    /**
+     * Получение текущего аутентифицированного пользователя.
+     *
+     * @return текущий пользователь.
+     * @throws ResourceNotFoundException если пользователь не найден.
+     */
+    User getCurrentUser();
+
+    /**
+     * Обновление данных текущего аутентифицированного пользователя.
+     *
+     * @param userDetails объект с новыми данными пользователя.
+     * @return обновленный пользователь.
+     */
+    User updateCurrentUser(User userDetails);
 }

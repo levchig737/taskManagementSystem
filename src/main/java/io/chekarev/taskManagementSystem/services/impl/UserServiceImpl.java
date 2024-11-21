@@ -5,6 +5,7 @@ import io.chekarev.taskManagementSystem.exceptions.ResourceNotFoundException;
 import io.chekarev.taskManagementSystem.repositories.UserRepository;
 import io.chekarev.taskManagementSystem.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -81,5 +82,32 @@ public class UserServiceImpl implements UserService {
     public User findByEmailForAuthentication(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+    }
+
+    /**
+     * Получение текущего аутентифицированного пользователя.
+     *
+     * @return текущий пользователь.
+     * @throws ResourceNotFoundException если пользователь не найден.
+     */
+    @Override
+    public User getCurrentUser() {
+        User userDetails = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + userDetails.getUsername()));
+    }
+
+    /**
+     * Обновление данных текущего аутентифицированного пользователя.
+     *
+     * @param userDetails объект с новыми данными пользователя.
+     * @return обновленный пользователь.
+     */
+    @Override
+    public User updateCurrentUser(User userDetails) {
+        User currentUser = getCurrentUser();
+        currentUser.setName(userDetails.getName());
+        currentUser.setEmail(userDetails.getEmail());
+        return userRepository.save(currentUser);
     }
 }
